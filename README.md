@@ -283,19 +283,13 @@ For support and questions:
 
 Future enhancements planned:
 
-[ ] Data export functionality
-
-[ ] Cloud synchronization
-
-[ ] Advanced reporting and analytics
-
-[ ] Time tracking timer
-
-[ ] Multiple user support
-
-[ ] Dark mode theme
-
-[ ] Widget support for quick access
+- [ ] Data export functionality
+- [ ] Cloud synchronization
+- [ ] Advanced reporting and analytics
+- [ ] Time tracking timer
+- [ ] Multiple user support
+- [ ] Dark mode theme
+- [ ] Widget support for quick access
 
 ---
 
