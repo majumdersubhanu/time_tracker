@@ -22,6 +22,7 @@ class MainApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Time Tracker',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),

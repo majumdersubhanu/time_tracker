@@ -99,7 +99,12 @@ class ManageTasksScreen extends StatelessWidget {
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Delete'),
+            child: Text(
+              'Delete',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onError,
+              ),
+            ),
           ),
         ],
       ),

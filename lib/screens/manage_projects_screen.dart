@@ -118,7 +118,12 @@ class ManageProjectsScreen extends StatelessWidget {
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
             ),
-            child: const Text('Delete'),
+            child: Text(
+              'Delete',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onError,
+              ),
+            ),
           ),
         ],
       ),
@@ -214,7 +219,8 @@ class _ProjectDialog extends StatefulWidget {
   final String title;
   final String? initialName;
   final bool? initialIsDefault;
-  final String? projectId; // Add projectId to track which project is being edited
+  final String?
+  projectId; // Add projectId to track which project is being edited
   final Function(String name, bool isDefault) onSave;
 
   const _ProjectDialog({
@@ -257,7 +263,7 @@ class _ProjectDialogState extends State<_ProjectDialog> {
   void _checkDefaultProjectAvailability() {
     final projectProvider = context.read<ProjectProvider>();
     final currentDefaultProject = projectProvider.getDefaultProject();
-    
+
     if (widget.projectId != null) {
       // This is an edit dialog for an existing project
       if (currentDefaultProject?.id == widget.projectId) {
@@ -271,7 +277,7 @@ class _ProjectDialogState extends State<_ProjectDialog> {
       // This is a new project dialog - only allow setting as default if no default exists
       _canSetAsDefault = currentDefaultProject == null;
     }
-    
+
     // If we can't set as default, ensure the checkbox is unchecked
     if (!_canSetAsDefault) {
       _isDefault = false;
@@ -305,16 +311,22 @@ class _ProjectDialogState extends State<_ProjectDialog> {
                 const SizedBox(height: 16),
                 CheckboxListTile(
                   title: const Text('Set as default project'),
-                  subtitle: _canSetAsDefault 
-                    ? const Text('This project will be selected by default when adding time entries')
-                    : const Text('Another project is already set as default. Unset it first to set this project as default.'),
+                  subtitle: _canSetAsDefault
+                      ? const Text(
+                          'This project will be selected by default when adding time entries',
+                        )
+                      : const Text(
+                          'Another project is already set as default. Unset it first to set this project as default.',
+                        ),
                   isThreeLine: true,
                   value: _isDefault,
-                  onChanged: _canSetAsDefault ? (value) {
-                    setState(() {
-                      _isDefault = value ?? false;
-                    });
-                  } : null,
+                  onChanged: _canSetAsDefault
+                      ? (value) {
+                          setState(() {
+                            _isDefault = value ?? false;
+                          });
+                        }
+                      : null,
                 ),
               ],
             ),

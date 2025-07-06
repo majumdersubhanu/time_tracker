@@ -20,10 +20,7 @@ class HomeScreen extends StatelessWidget {
         drawer: _buildDrawer(context),
         floatingActionButton: _buildFAB(context),
         body: const TabBarView(
-          children: [
-            _AllEntriesTab(),
-            _GroupedByProjectsTab(),
-          ],
+          children: [_AllEntriesTab(), _GroupedByProjectsTab()],
         ),
       ),
     );
@@ -88,16 +85,25 @@ class HomeScreen extends StatelessWidget {
 
   void _navigateToProjects(BuildContext context) {
     Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const ManageProjectsScreen()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const ManageProjectsScreen()),
+    );
   }
 
   void _navigateToTasks(BuildContext context) {
     Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const ManageTasksScreen()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const ManageTasksScreen()),
+    );
   }
 
   void _navigateToAddEntry(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => const AddTimeEntryScreen()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const AddTimeEntryScreen()),
+    );
   }
 }
 
@@ -108,14 +114,22 @@ class _AllEntriesTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<TimeEntryProvider>(
       builder: (context, provider, _) {
-        if (provider.isLoading) return const Center(child: CircularProgressIndicator());
-        if (provider.error != null) return _ErrorWidget(error: provider.error!, onRetry: provider.refreshTimeEntries);
+        if (provider.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (provider.error != null) {
+          return _ErrorWidget(
+            error: provider.error!,
+            onRetry: provider.refreshTimeEntries,
+          );
+        }
         if (provider.timeEntries.isEmpty) return const _EmptyState();
 
         return ListView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: provider.timeEntries.length,
-          itemBuilder: (context, index) => _TimeEntryCard(entry: provider.timeEntries[index]),
+          itemBuilder: (context, index) =>
+              _TimeEntryCard(entry: provider.timeEntries[index]),
         );
       },
     );
@@ -142,10 +156,12 @@ class _GroupedByProjectsTab extends StatelessWidget {
           itemCount: projectProvider.projects.length,
           itemBuilder: (context, index) {
             final project = projectProvider.projects[index];
-            final entries = timeEntryProvider.getTimeEntriesByProjectId(project.id!);
-            
+            final entries = timeEntryProvider.getTimeEntriesByProjectId(
+              project.id!,
+            );
+
             if (entries.isEmpty) return const SizedBox.shrink();
-            
+
             return _ProjectCard(project: project, entries: entries);
           },
         );
@@ -154,8 +170,6 @@ class _GroupedByProjectsTab extends StatelessWidget {
   }
 }
 
-
-
 class _TimeEntryCard extends StatelessWidget {
   final dynamic entry;
 
@@ -163,14 +177,14 @@ class _TimeEntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final project = context.read<ProjectProvider>().getProjectById(entry.projectId);
+    final project = context.read<ProjectProvider>().getProjectById(
+      entry.projectId,
+    );
     final task = context.read<TaskProvider>().getTaskById(entry.taskId);
 
     return Card(
       elevation: 2.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -179,7 +193,9 @@ class _TimeEntryCard extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.primaryContainer,
                   child: Icon(
                     Icons.access_time,
                     color: Theme.of(context).colorScheme.onPrimaryContainer,
@@ -190,36 +206,52 @@ class _TimeEntryCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(task?.name ?? 'Unknown Task', style: Theme.of(context).textTheme.titleMedium),
+                      Text(
+                        task?.name ?? 'Unknown Task',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
                       const SizedBox(height: 4),
-                      Text(project?.name ?? 'Unknown Project', style: Theme.of(context).textTheme.bodySmall),
+                      Text(
+                        project?.name ?? 'Unknown Project',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
                       const SizedBox(height: 4),
                       Row(
                         children: [
                           Icon(
                             Icons.timer,
                             size: 14,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
                           ),
                           const SizedBox(width: 4),
                           Text(
                             '${entry.duration} hours',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
                           ),
                           const SizedBox(width: 12),
                           Icon(
                             Icons.calendar_today,
                             size: 14,
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
                           ),
                           const SizedBox(width: 4),
                           Text(
                             _formatDate(entry.date),
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
                           ),
                         ],
                       ),
@@ -305,14 +337,24 @@ class _TimeEntryCard extends StatelessWidget {
         title: const Text('Delete Entry'),
         content: const Text('Are you sure you want to delete this time entry?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
           FilledButton(
             onPressed: () {
               context.read<TimeEntryProvider>().deleteTimeEntry(entryId);
               Navigator.pop(context);
             },
-            style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
-            child: const Text('Delete'),
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: Text(
+              'Delete',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onError,
+              ),
+            ),
           ),
         ],
       ),
@@ -322,9 +364,7 @@ class _TimeEntryCard extends StatelessWidget {
   void _showEditDialog(BuildContext context, dynamic entry) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => AddTimeEntryScreen(timeEntry: entry),
-      ),
+      MaterialPageRoute(builder: (_) => AddTimeEntryScreen(timeEntry: entry)),
     );
   }
 }
@@ -337,13 +377,14 @@ class _ProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final totalDuration = entries.fold(0.0, (sum, entry) => sum + (entry.duration ?? 0));
+    final totalDuration = entries.fold(
+      0.0,
+      (sum, entry) => sum + (entry.duration ?? 0),
+    );
 
     return Card(
       elevation: 2.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -352,12 +393,12 @@ class _ProjectCard extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: project.isDefault == true 
+                  backgroundColor: project.isDefault == true
                       ? Theme.of(context).colorScheme.primaryContainer
                       : Theme.of(context).colorScheme.surfaceContainerHighest,
                   child: Icon(
                     Icons.folder,
-                    color: project.isDefault == true 
+                    color: project.isDefault == true
                         ? Theme.of(context).colorScheme.onPrimaryContainer
                         : Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
@@ -367,16 +408,24 @@ class _ProjectCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(project.name ?? 'Unnamed Project', style: Theme.of(context).textTheme.titleMedium),
+                      Text(
+                        project.name ?? 'Unnamed Project',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
                       const SizedBox(height: 4),
-                      Text('${entries.length} entries • ${totalDuration.toStringAsFixed(1)} hours'),
+                      Text(
+                        '${entries.length} entries • ${totalDuration.toStringAsFixed(1)} hours',
+                      ),
                     ],
                   ),
                 ),
                 if (project.isDefault == true) ...[
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(8),
@@ -394,8 +443,10 @@ class _ProjectCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             ...entries.map((entry) {
-              final task = context.read<TaskProvider>().getTaskById(entry.taskId);
-              
+              final task = context.read<TaskProvider>().getTaskById(
+                entry.taskId,
+              );
+
               return Container(
                 margin: const EdgeInsets.only(bottom: 8),
                 padding: const EdgeInsets.all(12),
@@ -415,7 +466,9 @@ class _ProjectCard extends StatelessWidget {
                       child: Icon(
                         Icons.task,
                         size: 16,
-                        color: Theme.of(context).colorScheme.onSecondaryContainer,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSecondaryContainer,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -425,9 +478,8 @@ class _ProjectCard extends StatelessWidget {
                         children: [
                           Text(
                             task?.name ?? 'Unknown Task',
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w500),
                           ),
                           const SizedBox(height: 2),
                           Row(
@@ -435,27 +487,37 @@ class _ProjectCard extends StatelessWidget {
                               Icon(
                                 Icons.timer,
                                 size: 14,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 '${entry.duration} hours',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                ),
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
+                                    ),
                               ),
                               const SizedBox(width: 12),
                               Icon(
                                 Icons.calendar_today,
                                 size: 14,
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 _formatDate(entry.date),
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                ),
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurfaceVariant,
+                                    ),
                               ),
                             ],
                           ),
@@ -492,7 +554,7 @@ class _ProjectCard extends StatelessWidget {
                   ],
                 ),
               );
-            }).toList(),
+            }),
           ],
         ),
       ),
@@ -514,14 +576,24 @@ class _ProjectCard extends StatelessWidget {
         title: const Text('Delete Entry'),
         content: const Text('Are you sure you want to delete this time entry?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
           FilledButton(
             onPressed: () {
               context.read<TimeEntryProvider>().deleteTimeEntry(entryId);
               Navigator.pop(context);
             },
-            style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
-            child: const Text('Delete'),
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: Text(
+              'Delete',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onError,
+              ),
+            ),
           ),
         ],
       ),
@@ -531,9 +603,7 @@ class _ProjectCard extends StatelessWidget {
   void _showEditDialog(BuildContext context, dynamic entry) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => AddTimeEntryScreen(timeEntry: entry),
-      ),
+      MaterialPageRoute(builder: (_) => AddTimeEntryScreen(timeEntry: entry)),
     );
   }
 }
@@ -574,13 +644,21 @@ class _ErrorWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error_outline, size: 64, color: Theme.of(context).colorScheme.error),
+          Icon(
+            Icons.error_outline,
+            size: 64,
+            color: Theme.of(context).colorScheme.error,
+          ),
           const SizedBox(height: 16),
           const Text('Something went wrong'),
           const SizedBox(height: 8),
           Text(error, textAlign: TextAlign.center),
           const SizedBox(height: 24),
-          FilledButton.icon(onPressed: onRetry, icon: const Icon(Icons.refresh), label: const Text('Try Again')),
+          FilledButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh),
+            label: const Text('Try Again'),
+          ),
         ],
       ),
     );
@@ -596,7 +674,11 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.hourglass_empty, size: 64, color: Theme.of(context).colorScheme.primary),
+          Icon(
+            Icons.hourglass_empty,
+            size: 64,
+            color: Theme.of(context).colorScheme.primary,
+          ),
           const SizedBox(height: 24),
           const Text('No time entries yet'),
           const SizedBox(height: 8),
@@ -614,14 +696,21 @@ class _NoProjectsState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.folder_open, size: 64, color: Theme.of(context).colorScheme.primary),
+          Icon(
+            Icons.folder_open,
+            size: 64,
+            color: Theme.of(context).colorScheme.primary,
+          ),
           const SizedBox(height: 16),
           const Text('No projects yet'),
           const SizedBox(height: 8),
           const Text('Create your first project to get started'),
           const SizedBox(height: 24),
           FilledButton.icon(
-            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ManageProjectsScreen())),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ManageProjectsScreen()),
+            ),
             icon: const Icon(Icons.add),
             label: const Text('Create Project'),
           ),

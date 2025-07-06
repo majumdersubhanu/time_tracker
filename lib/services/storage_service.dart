@@ -66,7 +66,7 @@ class StorageService {
           }
         }
       }
-      
+
       projects[index] = project;
       await _saveProjects(projects);
       return true;

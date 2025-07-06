@@ -18,7 +18,7 @@ class _AddTimeEntryScreenState extends State<AddTimeEntryScreen> {
   final _formKey = GlobalKey<FormState>();
   final _durationController = TextEditingController();
   final _noteController = TextEditingController();
-  
+
   String? _selectedProjectId;
   String? _selectedTaskId;
   DateTime _selectedDate = DateTime.now();
@@ -87,69 +87,72 @@ class _AddTimeEntryScreenState extends State<AddTimeEntryScreen> {
         centerTitle: true,
       ),
       body: Consumer3<ProjectProvider, TaskProvider, TimeEntryProvider>(
-        builder: (context, projectProvider, taskProvider, timeEntryProvider, _) {
-          if (projectProvider.isLoading || taskProvider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+        builder:
+            (context, projectProvider, taskProvider, timeEntryProvider, _) {
+              if (projectProvider.isLoading || taskProvider.isLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-          if (projectProvider.projects.isEmpty) {
-            return _NoProjectsState();
-          }
+              if (projectProvider.projects.isEmpty) {
+                return _NoProjectsState();
+              }
 
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _ProjectDropdown(
-                    projects: projectProvider.projects,
-                    selectedProjectId: _selectedProjectId,
-                    onChanged: (projectId) {
-                      setState(() {
-                        _selectedProjectId = projectId;
-                        _selectedTaskId = null;
-                      });
-                      if (projectId != null) {
-                        _loadTasksForProject(projectId);
-                      }
-                    },
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _ProjectDropdown(
+                        projects: projectProvider.projects,
+                        selectedProjectId: _selectedProjectId,
+                        onChanged: (projectId) {
+                          setState(() {
+                            _selectedProjectId = projectId;
+                            _selectedTaskId = null;
+                          });
+                          if (projectId != null) {
+                            _loadTasksForProject(projectId);
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      _TaskDropdown(
+                        tasks: taskProvider.getTasksByProjectId(
+                          _selectedProjectId ?? '',
+                        ),
+                        selectedTaskId: _selectedTaskId,
+                        onChanged: (taskId) {
+                          setState(() {
+                            _selectedTaskId = taskId;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      _DurationField(controller: _durationController),
+                      const SizedBox(height: 16),
+                      _DatePickerField(
+                        selectedDate: _selectedDate,
+                        onChanged: (date) {
+                          setState(() {
+                            _selectedDate = date;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      _NoteField(controller: _noteController),
+                      const SizedBox(height: 32),
+                      _SaveButton(
+                        onPressed: () => _saveTimeEntry(timeEntryProvider),
+                        isLoading: timeEntryProvider.isLoading,
+                        isEditing: _isEditing,
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-                  _TaskDropdown(
-                    tasks: taskProvider.getTasksByProjectId(_selectedProjectId ?? ''),
-                    selectedTaskId: _selectedTaskId,
-                    onChanged: (taskId) {
-                      setState(() {
-                        _selectedTaskId = taskId;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _DurationField(controller: _durationController),
-                  const SizedBox(height: 16),
-                  _DatePickerField(
-                    selectedDate: _selectedDate,
-                    onChanged: (date) {
-                      setState(() {
-                        _selectedDate = date;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _NoteField(controller: _noteController),
-                  const SizedBox(height: 32),
-                  _SaveButton(
-                    onPressed: () => _saveTimeEntry(timeEntryProvider),
-                    isLoading: timeEntryProvider.isLoading,
-                    isEditing: _isEditing,
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+                ),
+              );
+            },
       ),
     );
   }
@@ -166,7 +169,7 @@ class _AddTimeEntryScreenState extends State<AddTimeEntryScreen> {
     try {
       final duration = double.parse(_durationController.text);
       final date = DateFormat('yyyy-MM-dd').format(_selectedDate);
-      
+
       if (_isEditing) {
         final updatedEntry = widget.timeEntry.copyWith(
           projectId: _selectedProjectId!,
@@ -189,14 +192,20 @@ class _AddTimeEntryScreenState extends State<AddTimeEntryScreen> {
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_isEditing ? 'Time entry updated successfully' : 'Time entry added successfully')),
+          SnackBar(
+            content: Text(
+              _isEditing
+                  ? 'Time entry updated successfully'
+                  : 'Time entry added successfully',
+            ),
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     }
   }
@@ -260,7 +269,11 @@ class _TaskDropdown extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.warning, color: Theme.of(context).colorScheme.error, size: 20),
+            Icon(
+              Icons.warning,
+              color: Theme.of(context).colorScheme.error,
+              size: 20,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
@@ -329,10 +342,7 @@ class _DatePickerField extends StatelessWidget {
   final DateTime selectedDate;
   final ValueChanged<DateTime> onChanged;
 
-  const _DatePickerField({
-    required this.selectedDate,
-    required this.onChanged,
-  });
+  const _DatePickerField({required this.selectedDate, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -419,7 +429,11 @@ class _NoProjectsState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.folder_open, size: 64, color: Theme.of(context).colorScheme.primary),
+          Icon(
+            Icons.folder_open,
+            size: 64,
+            color: Theme.of(context).colorScheme.primary,
+          ),
           const SizedBox(height: 16),
           const Text('No projects available'),
           const SizedBox(height: 8),
