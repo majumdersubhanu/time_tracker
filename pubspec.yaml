@@ -1,0 +1,28 @@
+name: time_tracker
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  json_annotation: ^4.9.0
+  freezed_annotation:
+  provider: ^6.1.5
+  shared_preferences: ^2.2.3
+  uuid: ^4.5.1
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner:
+  flutter_lints: ^5.0.0
+  json_serializable: ^6.9.5
+  freezed:
+
+flutter:
+  uses-material-design: true
